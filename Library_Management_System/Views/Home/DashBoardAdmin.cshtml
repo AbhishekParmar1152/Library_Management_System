@@ -1,0 +1,195 @@
+﻿@model Library_Management_System.Models.DTO.Count
+
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div class="page-wrapper">
+        <div class="page-body">
+            <div class="row">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-card-1">
+                        <div class="card-block-small">
+                            <i class="icofont icofont-pie-chart bg-c-blue card1-icon"></i>
+                            <span class="text-c-blue f-w-600">Books</span>
+                            <h4>@Html.DisplayFor(m => m.BooksCount)</h4>
+                            <div>
+                                <span class="f-left m-t-10 text-muted">
+                                    <i class="text-c-blue f-16 icofont icofont-warning m-r-10"></i>Total Books
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-card-1">
+                        <div class="card-block-small">
+                            <i class="icofont icofont-ui-home bg-c-pink card1-icon"></i>
+                            <span class="text-c-pink f-w-600">Libraries</span>
+                            <h4>@Html.DisplayFor(m => m.LibrariesCount)</h4>
+                            <div>
+                                <span class="f-left m-t-10 text-muted">
+                                    <i class="text-c-pink f-16 icofont icofont-calendar m-r-10"></i>Total Libraries
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-card-1">
+                        <div class="card-block-small">
+                            <i class="icofont icofont-warning-alt bg-c-green card1-icon"></i>
+                            <span class="text-c-green f-w-600">Librarian</span>
+                            <h4>@Html.DisplayFor(m => m.LibrarianCount)</h4>
+                            <div>
+                                <span class="f-left m-t-10 text-muted">
+                                    <i class="text-c-green f-16 icofont icofont-tag m-r-10"></i>Total Librarians
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-card-1">
+                        <div class="card-block-small">
+                            <i class="icofont icofont-social-twitter bg-c-yellow card1-icon"></i>
+                            <span class="text-c-yellow f-w-600">Students</span>
+                            <h4>@Html.DisplayFor(m => m.StudentCount)</h4>
+                            <div>
+                                <span class="f-left m-t-10 text-muted">
+                                    <i class="text-c-yellow f-16 icofont icofont-refresh m-r-10"></i>Total Students
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Statestics</h5>
+                            <div class="card-header-left ">
+                            </div>
+                            <div class="card-header-right">
+                                <ul class="list-unstyled card-option">
+                                    <li><i class="icofont icofont-simple-left "></i></li>
+                                    <li><i class="icofont icofont-maximize full-card"></i></li>
+                                    <li><i class="icofont icofont-minus minimize-card"></i></li>
+                                    <li><i class="icofont icofont-refresh reload-card"></i></li>
+                                    <li><i class="icofont icofont-error close-card"></i></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <div id="statestics-chart" style="height:517px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-4">
+                    <div class="card fb-card">
+                        <div class="card-header">
+                            <i class="icofont icofont-social-facebook"></i>
+                            <div class="d-inline-block">
+                                <h5>facebook</h5>
+                                <span>blog page timeline</span>
+                            </div>
+                        </div>
+                        <div class="card-block text-center">
+                            <div class="row">
+                                <div class="col-6 b-r-default">
+                                    <h2>23</h2>
+                                    <p class="text-muted">Active</p>
+                                </div>
+                                <div class="col-6">
+                                    <h2>23</h2>
+                                    <p class="text-muted">Comment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card dribble-card">
+                        <div class="card-header">
+                            <i class="icofont icofont-social-dribbble"></i>
+                            <div class="d-inline-block">
+                                <h5>dribble</h5>
+                                <span>Product page analysis</span>
+                            </div>
+                        </div>
+                        <div class="card-block text-center">
+                            <div class="row">
+                                <div class="col-6 b-r-default">
+                                    <h2>23</h2>
+                                    <p class="text-muted">Live</p>
+                                </div>
+                                <div class="col-6">
+                                    <h2>23</h2>
+                                    <p class="text-muted">Message</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card twitter-card">
+                        <div class="card-header">
+                            <i class="icofont icofont-social-twitter"></i>
+                            <div class="d-inline-block">
+                                <h5>twitter</h5>
+                                <span>current new timeline</span>
+                            </div>
+                        </div>
+                        <div class="card-block text-center">
+                            <div class="row">
+                                <div class="col-6 b-r-default">
+                                    <h2>25</h2>
+                                    <p class="text-muted">new tweet</p>
+                                </div>
+                                <div class="col-6">
+                                    <h2>450+</h2>
+                                    <p class="text-muted">Follower</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Home/BarChartAdmin",
+                data: {},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    successFunc(response);
+                },
+            });
+
+            function successFunc(jsondata) {
+                var dataPoints = [];
+                for (var i = 0; i < jsondata.length; i++) {
+                    dataPoints.push({
+                        x: new Date(jsondata[i].book_Added_On),
+                        y: parseInt(jsondata[i].no_Of_Copies_Actual)
+                    });
+                }
+                var chart = new CanvasJS.Chart("statestics-chart", {
+                    animationEnabled: true,
+                    theme: "light2",
+
+                    axisY: {
+                        title: "Copies",
+                        titleFontSize: 20,
+                        includeZero: true
+                    },
+                    data: [{
+                        type: "column",
+                        yValueFormatString: "#,### Copies",
+                        dataPoints: dataPoints
+                    }]
+                });
+                chart.render();
+            }
+        });
+    </script>
+</body>
+</html>

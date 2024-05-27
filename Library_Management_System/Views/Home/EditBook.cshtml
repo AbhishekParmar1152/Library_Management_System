@@ -1,0 +1,104 @@
+﻿@model Library_Management_System.Models.DTO.Books
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="addPositionsLabel">
+                    <h3>Book Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <form>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @*@Html.HiddenFor(model => model.Book_Id, new { @id = Model.Book_Id })*@
+                <input type="hidden" id="Book_Id" value="@Model.Book_Id">
+
+                <p>
+                    @Html.LabelFor(model => model.Book_Title, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Title })
+                    @Html.EditorFor(model => model.Book_Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Title, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Book_Publication, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Publication })
+                    @Html.EditorFor(model => model.Book_Publication, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Publication, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Book_Author, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Author })
+                    @Html.EditorFor(model => model.Book_Author, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Author, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Book_Category, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Category })
+                    @Html.EditorFor(model => model.Book_Category, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Category, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.No_Of_Copies_Actual, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.No_Of_Copies_Actual })
+                    @Html.EditorFor(model => model.No_Of_Copies_Actual, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.No_Of_Copies_Actual, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.No_Of_Copies_Current, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.No_Of_Copies_Current })
+                    @Html.EditorFor(model => model.No_Of_Copies_Current, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.No_Of_Copies_Current, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Book_Language, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Language })
+                    @Html.EditorFor(model => model.Book_Language, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Language, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Book_Added_On, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Book_Added_On })
+                    @Html.EditorFor(model => model.Book_Added_On, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Book_Added_On, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    <div id="Update">
+                        <input type="button" value="Save" onclick="Update()" class="registerbtn" />
+                    </div>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script>
+        function Update() {
+            var Data =
+            {
+                Book_Id: $("#Book_Id").val(),
+                Book_Title: $("#Book_Title").val(),
+                Book_Publication: $("#Book_Publication").val(),
+                Book_Author: $("#Book_Author").val(),
+                Book_Category: $("#Book_Category").val(),
+                No_Of_Copies_Actual: $("#No_Of_Copies_Actual").val(),
+                No_Of_Copies_Current: $("#No_Of_Copies_Current").val(),
+                Book_Language: $("#Book_Language").val(),
+                Book_Added_On: $("#Book_Added_On").val()
+            }
+            $.ajax({
+                url: "/Home/EditBook/",
+                method: "POST",
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: Data,
+                success: function (response) {
+                    debugger
+                    localStorage.setItem("Status", response)
+                    $("#Detail-User-Book .close").click()
+                    Message();
+                },
+                error: function (err) {
+                    localStorage.setItem("Status", err);
+                    $("#Detail-User-Book .close").click()
+                    Message();
+                },
+            });
+        }
+    </script>
+</body>
+</html>

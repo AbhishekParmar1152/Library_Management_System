@@ -1,0 +1,186 @@
+﻿@model Library_Management_System.Models.DTO.IssueBook
+
+<div class="page-body">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Search Book" id="SearchBook" onkeyup="myFunction()">
+        </div>
+        <div class="col-md-6">
+            <select name="SearchCategory" id="SearchCategory" class="form-control" onchange="myFunction2()">
+                <option value=""> Select Category </option>
+                @foreach (var item in Model.books)
+                {
+                    <option value="@item.Book_Category">
+                        @item.Book_Category
+                    </option>
+
+                }
+            </select>
+        </div>
+    </div>
+    <br />
+    <div class="card" id="cardid" style="display:none">
+        <div class="card-block table-border-style">
+            <div class="table-responsive">
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Publication</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Language</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.books)
+                        {
+                            <tr>
+                                <td>@row.Book_Title</td>
+                                <td>@row.Book_Publication</td>
+                                <td>@row.Book_Author</td>
+                                <td>@row.Book_Category</td>
+                                <td>@row.Book_Language</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+    <div class="card">
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <center>
+                            <h4>Book Issuing</h4>
+                        </center>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <center>
+                        </center>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Student Name</label>
+                        <div class="form-group">
+                            <select name="Student_Name" id="Student_Name" class="form-control" required>
+                                <option value="">Select Student </option>
+                                @foreach (var item in Model.users)
+                                {
+                                    <option value="@item.UserName">
+                                        @item.UserName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Book Name</label>
+                        <div class="form-group">
+                            <select name="Book_Name" id="Book_Name" class="form-control" required>
+                                <option value="">Select Book </option>
+                                @foreach (var item in Model.books)
+                                {
+                                    <option value="@item.Book_Title">
+                                        @item.Book_Title
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-primary btn-block" id="Button2" onclick="IssueBook()">Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    table = document.getElementById("cardid");
+    //    table.style.display = "none";
+    //})
+    function IssueBook() {
+        var Data =
+        {
+            Student_Name: $("#Student_Name").val(),
+            Book_Name: $("#Book_Name").val(),
+        }
+        $.ajax({
+            url: '@Url.Action("IssueBook", "Home")',
+            method: "POST",
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: Data,
+        });
+    }
+    function myFunction() {
+        var div = document.getElementById("cardid");
+        div.style.display = "";
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("SearchBook");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        if (input.value == "") {
+            div.style.display = "none";
+        }
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function myFunction2() {
+        div = document.getElementById("cardid");
+        div.style.display = "";
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("SearchCategory");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        if (input.value == "") {
+            div.style.display = "none";
+        }
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    const options = []
+    document.querySelectorAll('#SearchCategory > option').forEach((option) => {
+        if (options.includes(option.value)) option.remove()
+        else options.push(option.value)
+    })
+</script>

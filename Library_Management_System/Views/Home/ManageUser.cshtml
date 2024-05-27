@@ -1,0 +1,208 @@
+﻿@model IEnumerable<Library_Management_System.Models.DTO.Users>
+
+<html>
+<head>
+    <style>
+        #table {
+            display: table;
+            table-layout: fixed;
+            padding: 16px 20px;
+            width: 97%;
+            text-align: center;
+            border-radius: 50px;
+        }
+
+        #table-body {
+            display: table-row-group;
+            padding: 16px 20px;
+            width: 100%;
+        }
+
+        #table-footer {
+            display: table-row-group;
+            width: 100%;
+        }
+
+        .table-header-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-footer-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-cell {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .registerbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 10px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .txtBox {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <input type="text" placeholder="Search" id="myInput" onkeyup="myFunction()" class="form-control">
+    </div>
+    <br />
+
+    <div class="modal" id="Detail-User" tabindex="-1" role="dialog" aria-labelledby="addPositionsLabel" aria-hidden="true">
+        <div id="Detail-User-container"></div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div id="table">
+                <div id="table-body">
+                    <div class="table-header-row">
+                        <div class="hide">
+                            Id
+                        </div>
+                        <div class="table-body-cell">
+                            UserName
+                        </div>
+                        <div class="table-body-cell">
+                            Email
+                        </div>
+                        <div class="table-body-cell">
+                            Phonenumber
+                        </div>
+                        <div class="table-body-cell">
+                            ACTION
+                        </div>
+                    </div>
+                    @foreach (Library_Management_System.Models.DTO.Users users in Model)
+                    {
+                        <div class="table-body-row" id="table-row">
+                            <div class="hide">
+                                @users.Id
+                            </div>
+                            <div class="table-body-cell">
+                                @users.UserName
+                            </div>
+                            <div class="table-body-cell">
+                                @users.Email
+                            </div>
+                            <div class="table-body-cell">
+                                @users.PhoneNumber
+                            </div>
+                            <div class="table-body-cell">
+                                <input type="button" class="btn btn-danger" value="Delete" aria-label="Close" onclick="Remove(this)" />
+                                <input type="button" class="btn btn-inverse" id="btnEdit" value="Edit" onclick="btnEdit(this)" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        function Remove(button) {
+            var row = $(button).closest("#table-row");
+            var UserName = $("div", row).eq(1).html();
+            if (confirm("Do you want to delete: " + UserName)) {
+                var Userdata = {};
+                Userdata.Id = $("div", row).eq(0).text().trim();
+                Userdata.UserName = $("div", row).eq(1).text().trim();
+                Userdata.Email = $("div", row).eq(2).html().trim();
+                Userdata.PhoneNumber = $("div", row).eq(3).html().trim();
+                row.remove();
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Home/DeleteUser",
+                    data: JSON.stringify(Userdata),
+                    success: function (r) {
+                        localStorage.setItem("Status", 'record deleted')
+                        Message();
+                    }
+                });
+            }
+        }
+        function btnEdit(button) {
+            var row = $(button).closest("#table-row");
+            var id = $("div", row).eq(0).html().trim();
+            $.ajax({
+                url: "/Home/EditUser/",
+                method: "GET",
+                dataType: 'html',
+                data: { id: id },
+                success: function (response) {
+                    $("#Detail-User-container").html(response);
+                    $("#Detail-User").modal('show');
+                },
+                error: function (err) {
+                    localStorage.setItem("Error", err);
+                    Message();
+                },
+            });
+        }
+    </script>
+    <script>
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByClassName("table-body-row");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByClassName("table-body-cell")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

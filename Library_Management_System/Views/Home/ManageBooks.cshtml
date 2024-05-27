@@ -1,0 +1,404 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<Library_Management_System.Models.DTO.Books>
+
+<html>
+<head>
+    <style>
+        #table {
+            display: table;
+            table-layout: fixed;
+            padding: 16px 20px;
+            width: 97%;
+            text-align: center;
+            border-radius: 50px;
+        }
+
+        #table-body {
+            display: table-row-group;
+            padding: 16px 20px;
+            width: 100%;
+        }
+
+        #table-footer {
+            display: table-row-group;
+            width: 100%;
+        }
+
+        .table-header-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-footer-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-cell {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .txtBox {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+            border-radius: 50px;
+        }
+
+        .registerbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 10px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <input type="text" placeholder="Search" id="myInput" onkeyup="myFunction()" class="form-control">
+    </div>
+    <br />
+
+    <div class="modal" id="Detail-User-Book" tabindex="-1" role="dialog" aria-labelledby="addPositionsLabel" aria-hidden="true">
+        <div id="Detail-User-container-Book"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="table">
+                <div id="table-body">
+                    <div class="table-header-row">
+                        <div class="hide">
+                            Book_Id
+                        </div>
+                        <div class="table-body-cell">
+                            Book_Title
+                        </div>
+                        <div class="table-body-cell">
+                            Language
+                        </div>
+                        <div class="table-body-cell">
+                            Publication
+                        </div>
+                        <div class="table-body-cell">
+                            Author
+                        </div>
+                        <div class="table-body-cell">
+                            Category
+                        </div>
+                        <div class="table-body-cell">
+                            Added_On
+                        </div>
+                        <div class="table-body-cell">
+                            Copies_Actual
+                        </div>
+                        <div class="table-body-cell">
+                            Copies_Current
+                        </div>
+                        <div class="table-body-cell">
+                                ACTION
+                        </div>
+                    </div>
+                    @foreach (Library_Management_System.Models.DTO.Books Book in Model)
+                    {
+                        <div class="table-body-row" id="table-row">
+                            <div class="hide">
+                                @Book.Book_Id
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Title
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Language
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Publication
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Author
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Category
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.Book_Added_On
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.No_Of_Copies_Actual
+                            </div>
+                            <div class="table-body-cell">
+                                @Book.No_Of_Copies_Current
+                            </div>
+                            <div class="table-body-cell">
+                                    <input type="button" class="btn btn-danger" value="Delete" aria-label="Close" onclick="Remove(this)" />
+                                    <input type="button" class="btn btn-inverse" id="btnEdit" value="Edit" onclick="btnEdit(@Book.Book_Id)" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div id="table-footer">
+                    <div class="table-footer-row">
+                        <div class="hide">
+                            <input type="text" class="txtBox" id="Book_Id" />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Book_Title" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Book_Language" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Book_Publication" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Book_Author" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Book_Category" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="date" class="txtBox" id="Book_Added_On" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="number" class="txtBox" id="No_Of_Copies_Actual" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="number" class="txtBox" id="No_Of_Copies_Current" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="button" class="btn btn-success" id="btnAdd" value="ADD" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <input type="button" id="btnSave" value="Save All" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" />
+            </div>
+        </div>
+    </div>
+    <script>
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        $("body").on("click", "#btnAdd", function () {
+            if (document.getElementById("Book_Title").value == "") {
+                alert("Please provide Book Name !");
+                document.getElementById("Book_Title").focus();
+                return false;
+            }
+            if (document.getElementById("Book_Language").value == "") {
+                alert("Please provide Book Language !");
+                document.getElementById("Book_Language").focus();
+                return false;
+            }
+            if (document.getElementById("Book_Publication").value == "") {
+                alert("Please provide Book Publication !");
+                document.getElementById("Book_Publication").focus();
+                return false;
+            }
+            if (document.getElementById("Book_Author").value == "") {
+                alert("Please provide Book Author !");
+                document.getElementById("Book_Author").focus();
+                return false;
+            }
+            if (document.getElementById("Book_Category").value == "") {
+                alert("Please provide Book Category !");
+                document.getElementById("Book_Category").focus();
+                return false;
+            }
+            if (document.getElementById("Book_Added_On").value == "") {
+                alert("Please provide Book Add_Date !");
+                document.getElementById("Book_Added_On").focus();
+                return false;
+            }
+            if (document.getElementById("No_Of_Copies_Actual").value == "") {
+                alert("Please provide No of Actual Copies !");
+                document.getElementById("No_Of_Copies_Actual").focus();
+                return false;
+            }
+            if (document.getElementById("No_Of_Copies_Current").value == "") {
+                alert("Please provide No of Current Copies !");
+                document.getElementById("No_Of_Copies_Current").focus();
+                return false;
+            }
+            else {
+                var Book_Id = $("#Book_Id");
+                var Book_Title = $("#Book_Title");
+                var Book_Language = $("#Book_Language");
+                var Book_Publication = $("#Book_Publication");
+                var Book_Author = $("#Book_Author");
+                var Book_Category = $("#Book_Category");
+                var Book_Added_On = $("#Book_Added_On");
+                var No_Of_Copies_Actual = $("#No_Of_Copies_Actual");
+                var No_Of_Copies_Current = $("#No_Of_Copies_Current");
+
+                var new_row = '';
+                new_row += '<div class="table-body-row" id="table-row">'
+                new_row += '<div class="hide">' + document.getElementById("Book_Id").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Title").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Language").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Publication").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Author").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Category").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Book_Added_On").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("No_Of_Copies_Actual").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("No_Of_Copies_Current").value + '</div>'
+                new_row += '<div class="table-body-cell">' + '<input type="button" class="btn btn-danger" value="Delete" aria-label="Close" onclick="Remove(this)" />' + '<input type="button" class="btn btn-inverse" value="Edit" id="btnEdit" />' + '</div>'
+                new_row += '</div>'
+
+                var theDiv = document.getElementById("table-body");
+                theDiv.insertAdjacentHTML('afterend', new_row);
+
+                Book_Id.val("");
+                Book_Title.val("");
+                Book_Language.val("");
+                Book_Publication.val("");
+                Book_Author.val("");
+                Book_Category.val("");
+                Book_Added_On.val("");
+                No_Of_Copies_Actual.val("");
+                No_Of_Copies_Current.val("");
+            }
+        })
+        function Remove(button) {
+            var row = $(button).closest("#table-row");
+            var Book_Title = $("div", row).eq(1).html();
+            if (confirm("Do you want to delete: " + Book_Title)) {
+                var Bookdata = {};
+                Bookdata.Book_Id = $("div", row).eq(0).text().trim();
+                Bookdata.Book_Title = $("div", row).eq(1).text().trim();
+                Bookdata.Book_Language = $("div", row).eq(2).html().trim();
+                Bookdata.Book_Publication = $("div", row).eq(3).html().trim();
+                Bookdata.Book_Author = $("div", row).eq(4).html().trim();
+                Bookdata.Book_Category = $("div", row).eq(5).html().trim();
+                Bookdata.Book_Added_On = $("div", row).eq(6).html().trim();
+                Bookdata.No_Of_Copies_Actual = $("div", row).eq(7).html().trim();
+                Bookdata.No_Of_Copies_Current = $("div", row).eq(8).html().trim();
+                row.remove();
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Home/DeleteBook",
+                    data: JSON.stringify(Bookdata),
+                    success: function (r) {
+                        localStorage.setItem("Status", 'record deleted')
+                        Message();
+                    }
+                });
+            }
+        }
+        function btnEdit(button) {
+
+            $.ajax({
+                url: "/Home/EditBook/",
+                method: "GET",
+                dataType: 'html',
+                async: false,
+                data: { id: button },
+                success: function (response) {
+                    $("#Detail-User-container-Book").html(response);
+                    $("#Detail-User-Book").modal('show');
+                },
+                error: function (err) {
+                    localStorage.setItem("Error", err);
+                    Message();
+                },
+            });
+
+        }
+        $("body").on("click", "#btnSave", function () {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'GET',
+                url: "/Home/Librarian_Id",
+                success: function (r) {
+                    const tableObject = document.getElementsByClassName("table-body-row");
+                    var Books = new Array();
+                    $(tableObject).each(function () {
+                        var row = $(this);
+                        var Bookdata = {};
+                        Bookdata.Book_Id = row.find("div", row).eq(0).text().trim();
+                        Bookdata.Book_Title = row.find("div", row).eq(1).text().trim();
+                        Bookdata.Book_Language = row.find("div", row).eq(2).html().trim();
+                        Bookdata.Book_Publication = row.find("div", row).eq(3).html().trim();
+                        Bookdata.Book_Author = row.find("div", row).eq(4).html().trim();
+                        Bookdata.Book_Category = row.find("div", row).eq(5).html().trim();
+                        Bookdata.Book_Added_On = row.find("div", row).eq(6).html().trim();
+                        Bookdata.No_Of_Copies_Actual = row.find("div", row).eq(7).html().trim();
+                        Bookdata.No_Of_Copies_Current = row.find("div", row).eq(8).html().trim();
+                        Bookdata.Library_Id = r;
+                        Books.push(Bookdata);
+                    });
+                    $.ajax({
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        type: 'POST',
+                        url: "/Home/AddBook",
+                        data: JSON.stringify(Books),
+                        success: function (r) {
+                            localStorage.setItem("Status", r + " record(s) inserted.");
+                            Message();
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+    <script>
+        function myFunction() {
+            debugger;
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByClassName("table-body-row");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByClassName("table-body-cell")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

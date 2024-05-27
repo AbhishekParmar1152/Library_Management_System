@@ -1,0 +1,426 @@
+﻿@model IEnumerable<Library_Management_System.Models.DTO.Users>
+<html>
+<head>
+    <script>
+        var rteObj, ranges, dialogObj, saveSelection, tabObj;
+        var selection = new ej.richtexteditor.NodeSelection();
+        function onDialogCreate() {
+            dialogObj = this;
+            dialogObj.element.style.maxHeight = '300px';
+        }
+        function onInsert() {
+            var activeEle = dialogObj.element.querySelector('.char_block.e-active');
+            if (activeEle) {
+                if (rteObj.formatter.getUndoRedoStack().length === 0) {
+                    rteObj.formatter.saveData();
+                }
+                ranges = selection.getRange(document)
+                saveSelection.restore();
+                rteObj.executeCommand('insertText', activeEle.textContent);
+                rteObj.formatter.saveData();
+                rteObj.formatter.enableUndo(rteObj);
+            }
+            dialogOverlay();
+        }
+        function actionComplete(e) {
+            if (e.requestType === 'SourceCode') {
+                rteObj.getToolbar().querySelector('#emot_tbar').parentElement.classList.add('e-overlay');
+            } else if (e.requestType === 'Preview') {
+                rteObj.getToolbar().querySelector('#emot_tbar').parentElement.classList.remove('e-overlay');
+            }
+        };
+
+        function tabCreated() {
+            tabObj = this;
+        }
+        function onOpen() {
+            tabObj.refresh();
+        }
+        function dialogOverlay() {
+            var activeEle = dialogObj.element.querySelector('.char_block.e-active');
+            if (activeEle) {
+                activeEle.classList.remove('e-active');
+            }
+            dialogObj.hide();
+        }
+        function created() {
+            rteObj = this;
+            selection = new ej.richtexteditor.NodeSelection();
+            var customBtn = rteObj.element.querySelector('#emot_tbar');
+            customBtn.onclick = function (e) {
+                dialogObj.element.style.display = '';
+                ranges = selection.getRange(document);
+                dialogObj.width = rteObj.element.offsetWidth * 0.5;
+                saveSelection = selection.save(ranges, document);
+                dialogObj.show();
+                var dialogCtn = document.getElementById('rteSpecial_char');
+                dialogCtn.onclick = function (e) {
+                    var target = e.target;
+                    var activeEle = dialogObj.element.querySelector('.char_block.e-active');
+                    if (target.classList.contains('char_block')) {
+                        target.classList.add('e-active');
+                        if (activeEle) {
+                            activeEle.classList.remove('e-active');
+                        }
+                    }
+                };
+
+                customBtn.onclick = function (e) {
+                    rteObj.focusIn();
+                    dialogObj.element.style.display = '';
+                    ranges = selection.getRange(document);
+                    saveSelection = selection.save(ranges, document);
+                    dialogObj.width = rteObj.element.offsetWidth * 0.5;
+                    dialogObj.show();
+                };
+            };
+        }
+    </script>
+    <script>
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        function Remove(button) {
+            var row = $(button).closest("#table-row");
+            var UserName = $("div", row).eq(1).html();
+            if (confirm("Do you want to delete: " + UserName)) {
+                var Userdata = {};
+                Userdata.Id = $("div", row).eq(0).text().trim();
+                Userdata.UserName = $("div", row).eq(1).text().trim();
+                Userdata.Email = $("div", row).eq(2).html().trim();
+                Userdata.PhoneNumber = $("div", row).eq(3).html().trim();
+                row.remove();
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Home/DeleteLibrarian",
+                    data: JSON.stringify(Userdata),
+                    success: function (r) {
+                        localStorage.setItem("Status", 'record deleted permanently')
+                        Message();
+                    }
+                });
+            }
+        }
+        function Edit(button) {
+            $.ajax({
+                url: "/Home/EditLibrarian/",
+                method: "GET",
+                dataType: 'html',
+                data: { id: button },
+                success: function (response) {
+                    $("#Librarian-Detail-User-container").html(response);
+                    $("#Librarian-Detail-User").modal('show');
+                },
+                error: function (err) {
+                    localStorage.setItem("Error", 'Unable to Edit Record.')
+                    Message();
+                },
+            });
+        }
+    </script>
+    <script>
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByClassName("table-body-row");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByClassName("table-body-cell")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .searchbox {
+            font-size: 14px;
+            border-radius: 2px;
+            border: 1px solid #cccccc;
+            margin: 10px 64px 0px 34px;
+        }
+
+        #table {
+            display: table;
+            table-layout: fixed;
+            padding: 16px 20px;
+            width: 97%;
+            text-align: center;
+            border-radius: 50px;
+        }
+
+        #table-body {
+            display: table-row-group;
+            padding: 16px 20px;
+            width: 100%;
+        }
+
+        #table-footer {
+            display: table-row-group;
+            width: 100%;
+        }
+
+        .table-header-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-footer-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-cell {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .registerbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 10px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .txtBox {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+            border-radius: 50px;
+        }
+
+        .Icon {
+            font-family: 'themify';
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 2;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: x-large;
+            cursor: pointer;
+        }
+    </style>
+    <style>
+
+        #emotTbarDialog #special_char,
+        #emotTbarDialog .char_block {
+            display: inline-block;
+        }
+
+        #emot_tbar,
+        #emot_tbar div {
+            cursor: pointer;
+        }
+
+        #rteEmoticons-smiley, #rteEmoticons-animal {
+            padding: 15px 0 15px 15px;
+        }
+
+        #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #e3165b;
+            border-color: #e3165b;
+        }
+
+        .material #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #e3165b;
+            border-color: #e3165b;
+        }
+
+        .material-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #56a4fd;
+            border-color: #56a4fd;
+        }
+
+        .fabric #emotTbarDialog .char_block.e-active,
+        .fabric-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #0078d6;
+            border-color: #0078d6;
+        }
+
+        .bootstrap4 #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #007bff;
+            border-color: #007bff;
+        }
+
+        .bootstrap #emotTbarDialog .char_block.e-active,
+        .bootstrap-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #317ab9;
+            border-color: #317ab9;
+        }
+
+        .highcontrast #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #ffd939;
+            border-color: #ffd939;
+        }
+
+        .tailwind #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #3730a3;
+            border-color: #3730a3;
+        }
+
+        .tailwind-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #22d3ee;
+            border-color: #22d3ee;
+        }
+
+        .bootstrap5 #emotTbarDialog .char_block.e-active,
+        .bootstrap5-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #0D6EFD;
+            border-color: #0D6EFD;
+        }
+
+        .fluent #emotTbarDialog .char_block.e-active,
+        .fluent-dark #emotTbarDialog .char_block.e-active {
+            outline: 1px solid #0078DE;
+            border-color: #0078DE;
+        }
+
+        #emotTbarDialog .char_block {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            margin: 0 5px 5px 0;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #DDDDDD;
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #emot_tbar .rtecustomtool {
+            font-size: 18px;
+        }
+
+        @@media (min-width: 320px) and (max-width: 480px) {
+            #rteEmoticons-smiley, #rteEmoticons-animal {
+                padding: 15px 0 15px 6px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <form class="md-float-material">
+        <div class="auth-box">
+            <div class="row m-b-20">
+                <div class="col-md-12">
+                    <h3 class="text-center txt-primary">Manage Librarian</h3>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <input type="text" placeholder="Search" id="myInput" onkeyup="myFunction()" class="form-control searchbox">
+            </div>
+            <div class="modal fade modal-icon show" id="Librarian-Detail-User" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" id="Librarian-Detail-User-container">
+
+                    </div>
+                </div>
+            </div>
+            @*<div class="modal" id="Librarian-Detail-User" tabindex="-1" role="dialog" aria-labelledby="addPositionsLabel" aria-hidden="true">
+                    <div id="Librarian-Detail-User-container"></div>
+                </div>*@
+            <div id="table">
+                <div id="table-body">
+                    <div class="table-header-row">
+                        <div class="hide">
+                            Id
+                        </div>
+                        <div class="table-body-cell">
+                            UserName
+                        </div>
+                        <div class="table-body-cell">
+                            Email
+                        </div>
+                        <div class="table-body-cell">
+                            Phonenumber
+                        </div>
+                        <div class="table-body-cell">
+                            Library
+                        </div>
+                        <div class="table-body-cell">
+                            ACTION
+                        </div>
+                    </div>
+                    @foreach (Library_Management_System.Models.DTO.Users users in Model)
+                    {
+                        <div class="table-body-row" id="table-row">
+                            <div class="hide">
+                                @users.Id
+                            </div>
+                            <div class="table-body-cell">
+                                @users.UserName
+                            </div>
+                            <div class="table-body-cell">
+                                @users.Email
+                            </div>
+                            <div class="table-body-cell">
+                                @users.PhoneNumber
+                            </div>
+                            <div class="table-body-cell">
+                                @users.Library_Name
+                            </div>
+                            <div class="table-body-cell">
+                                <i class="ti-trash Icon" value="Delete" aria-label="Close" onclick="Remove(this)"></i>
+                                <i class="ti-pencil-alt Icon" id="btnEdit" value="Edit" onclick="Edit('@users.Id')"></i>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <br />
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-10">
+                    <p class="text-inverse text-left m-b-0">Thank you and enjoy our website.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</body>
+</html>

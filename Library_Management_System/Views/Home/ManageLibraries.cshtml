@@ -1,0 +1,379 @@
+﻿@model IEnumerable<Library_Management_System.Models.DTO.Libraries>
+
+<html>
+<head>
+    <style>
+        .searchbox {
+            font-size: 14px;
+            border-radius: 2px;
+            border: 1px solid #cccccc;
+            margin: 10px 64px 0px 34px;
+        }
+
+        #table {
+            display: table;
+            table-layout: fixed;
+            padding: 16px 20px 0;
+            width: 97%;
+            text-align: center;
+            border-radius: 50px;
+        }
+
+        .table table-body-cell {
+            white-space: nowrap;
+        }
+
+        #table-body {
+            display: table-row-group;
+            padding: 16px 20px;
+            width: 100%;
+        }
+
+        #table-footer {
+            display: table-row-group;
+            width: 100%;
+        }
+
+        .table-header-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-footer-row {
+            display: table-row;
+            width: 100%;
+        }
+
+        .table-body-cell {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            max-width: 100%;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .registerbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 10px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .txtBox {
+            display: table-cell;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            width: 100%;
+            border-radius: 50px;
+        }
+
+        .table-body-cell-button {
+            width: 148px;
+            border: 1px solid #dddddd;
+            line-height: 1.428571;
+            vertical-align: top;
+            padding: 18px;
+        }
+        .Icon {
+            font-family: 'themify';
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 2;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: x-large;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form class="md-float-material">
+        <div class="auth-box">
+            <div class="row m-b-20">
+                <div class="col-md-12">
+                    <h3 class="text-center txt-primary">Manage Libraries</h3>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <input type="text" placeholder="Search" id="myInput" onkeyup="myFunction()" class="form-control searchbox">
+            </div>
+            <div class="modal" id="Detail-User" tabindex="-1" role="dialog" aria-labelledby="addPositionsLabel" aria-hidden="true">
+                <div id="Detail-User-container"></div>
+            </div>
+
+            <div id="table" class="table">
+                <div id="table-body">
+                    <div class="table-header-row">
+                        <div class="hide">
+                            Library_Id
+                        </div>
+                        <div class="table-body-cell">
+                            Name
+                        </div>
+                        <div class="table-body-cell">
+                            Address
+                        </div>
+                        <div class="table-body-cell">
+                            City
+                        </div>
+                        <div class="table-body-cell">
+                            Pincode
+                        </div>
+                        <div class="table-body-cell">
+                            Created on
+                        </div>
+                        <div class="table-body-cell">
+                            ACTION
+                        </div>
+                    </div>
+                    @foreach (Library_Management_System.Models.DTO.Libraries Libraries in Model)
+                    {
+                        <div class="table-body-row" id="table-row">
+                            <div class="hide">
+                                @Libraries.Library_Id
+                            </div>
+                            <div class="table-body-cell">
+                                @Libraries.Library_Name
+                            </div>
+                            <div class="table-body-cell">
+                                @Libraries.Library_Address
+                            </div>
+                            <div class="table-body-cell">
+                                @Libraries.Library_City
+                            </div>
+                            <div class="table-body-cell">
+                                @Libraries.Library_Pincode
+                            </div>
+                            <div class="table-body-cell">
+                                @Libraries.Library_Create_Date.Replace("12:00:00 AM", "")
+                            </div>
+                            <div class="table-body-cell">
+                                <i class="ti-trash Icon" value="Delete" aria-label="Close" onclick="Remove(this)"></i>
+                                <i class="ti-pencil-alt Icon" id="btnEdit" value="Edit" onclick="btnEdit2(@Libraries.Library_Id)"></i>
+                                @*<i class="ti-trash lastcell btn-danger" onclick="Remove(this)"></i>*@
+                                @*<input type="button" class="lastcell btn-danger" value="Delete" aria-label="Close" onclick="Remove(this)" />*@
+                                @*<input type="button" class="lastcell btn-inverse" id="btnEdit" value="Edit" onclick="btnEdit2(@Libraries.Library_Id)" />*@
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div id="table-footer">
+                    <div class="table-footer-row">
+                        <div class="hide">
+                            <input type="text" class="txtBox" id="Library_Id" />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Library_Name" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Library_Address" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Library_City" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="text" class="txtBox" id="Library_Pincode" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="date" class="txtBox" id="Library_Create_Date" required />
+                        </div>
+                        <div class="table-body-cell">
+                            <input type="button" class="btn btn-success" id="btnAdd" value="ADD" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div align="left">
+                    <input type="button" id="btnSave" value="Save All" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-10">
+                    <p class="text-inverse text-left m-b-0">Thank you and enjoy our website.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+   
+    <script>
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        $("body").on("click", "#btnAdd", function () {
+            if (document.getElementById("Library_Name").value == "") {
+                alert("Please provide Library Name !");
+                document.getElementById("Library_Name").focus();
+                return false;
+            }
+            if (document.getElementById("Library_Address").value == "") {
+                alert("Please provide Library Address !");
+                document.getElementById("Library_Address").focus();
+                return false;
+            }
+            if (document.getElementById("Library_City").value == "") {
+                alert("Please provide Library City !");
+                document.getElementById("Library_City").focus();
+                return false;
+            }
+            if (document.getElementById("Library_Pincode").value == "") {
+                alert("Please provide Library Pincode !");
+                document.getElementById("Library_Pincode").focus();
+                return false;
+            }
+            if (document.getElementById("Library_Create_Date").value == "") {
+                alert("Please provide Library Create_Date !");
+                document.getElementById("Library_Create_Date").focus();
+                return false;
+            }
+            else {
+                var Library_Id = $("#Library_Id");
+                var Library_Name = $("#Library_Name");
+                var Library_Address = $("#Library_Address");
+                var Library_City = $("#Library_City");
+                var Library_Pincode = $("#Library_Pincode");
+                var Library_Create_Date = $("#Library_Create_Date");
+
+                var new_row = '';
+                new_row += '<div class="table-body-row" id="table-row">'
+                new_row += '<div class="hide">' + document.getElementById("Library_Id").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Library_Name").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Library_Address").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Library_City").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Library_Pincode").value + '</div>'
+                new_row += '<div class="table-body-cell">' + document.getElementById("Library_Create_Date").value + '</div>'
+                new_row += '<div class="table-body-cell">' + '<i class="ti-trash Icon" value="Delete" aria-label="Close" onclick="Remove(this)"></i>' + '</div>'
+                new_row += '</div>'
+
+                var theDiv = document.getElementById("table-body");
+                theDiv.insertAdjacentHTML('afterend', new_row);
+
+                Library_Id.val("");
+                Library_Name.val("");
+                Library_Address.val("");
+                Library_City.val("");
+                Library_Pincode.val("");
+                Library_Create_Date.val("");
+            }
+        })
+        function Remove(button) {
+            var row = $(button).closest("#table-row");
+            var Book_Title = $("div", row).eq(1).html();
+            if (confirm("Do you want to delete: " + Book_Title)) {
+                var Librarydata = {};
+                Librarydata.Library_Id = $("div", row).eq(0).text().trim();
+                Librarydata.Library_Name = $("div", row).eq(1).text().trim();
+                Librarydata.Library_Address = $("div", row).eq(2).html().trim();
+                Librarydata.Library_City = $("div", row).eq(3).html().trim();
+                Librarydata.Library_Pincode = $("div", row).eq(4).html().trim();
+                Librarydata.Library_Create_Date = $("div", row).eq(5).html().trim();
+                row.remove();
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/Home/DeleteLibrary",
+                    data: JSON.stringify(Librarydata),
+                    success: function (r) {
+                        localStorage.setItem("Status", 'record deleted')
+                        Message();
+                    }
+                });
+            }
+        }
+        function btnEdit2(button) {
+            $.ajax({
+                url: "/Home/EditLibrary/",
+                method: "GET",
+                dataType: 'html',
+                data: { id: button },
+                success: function (response) {
+                    $("#Detail-User-container").html(response);
+                    $("#Detail-User").modal('show');
+                },
+                error: function (err) {
+                    localStorage.setItem("Error", 'Unable to Edit Record.');
+                    Message();
+                },
+            });
+        }
+        $("body").on("click", "#btnSave", function () {
+            const tableObject = document.getElementsByClassName("table-body-row");
+            var Library = new Array();
+            $(tableObject).each(function () {
+                var row = $(this);
+                var LibraryData = {};
+                LibraryData.Library_Id = row.find("div", row).eq(0).text().trim();
+                LibraryData.Library_Name = row.find("div", row).eq(1).text().trim();
+                LibraryData.Library_Address = row.find("div", row).eq(2).html().trim();
+                LibraryData.Library_City = row.find("div", row).eq(3).html().trim();
+                LibraryData.Library_Pincode = row.find("div", row).eq(4).html().trim();
+                LibraryData.Library_Create_Date = row.find("div", row).eq(5).html().trim();
+                Library.push(LibraryData);
+            });
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                async: false,
+                dataType: 'json',
+                type: 'POST',
+                url: "/Home/AddLibrary",
+                data: JSON.stringify(Library),
+                success: function (r) {
+                    localStorage.setItem("Status", r + " record(s) inserted.");
+                    Message();
+                }
+            });
+        });
+    </script>
+    <script>
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByClassName("table-body-row");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByClassName("table-body-cell")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

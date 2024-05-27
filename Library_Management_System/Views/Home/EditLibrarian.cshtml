@@ -1,0 +1,143 @@
+﻿@model Library_Management_System.Models.DTO.Users
+
+<!DOCTYPE html>
+<html>
+<body>
+    @*<div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPositionsLabel">
+                    Librarian Details
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h5>
+            </div>*@
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Edit Librarian</h4>
+        <button type="button" class="" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form onsubmit="val()">
+            @Html.ValidationSummary(true, "", new { @class = "form-control" })
+            @Html.HiddenFor(model => model.Id, new { })
+
+            <p>
+                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.UserName })
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </p>
+            <p>
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Email })
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </p>
+            <p>
+                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.PhoneNumber })
+                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+            </p>
+            <p>
+                @Html.LabelFor(model => model.Library_Name, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_Name })
+                <select name="Library_Id" id="Library_Id" class="form-control" required>
+                    <option value="@Model.Library_Id">@Model.Library_Name</option>
+                </select>
+            </p>
+        </form>
+    </div>
+    <div class="modal-footer">
+            <input type="button" value="Save" onclick="Update()" class="registerbtn" />
+    </div>
+
+
+    @*</div>
+        </div>*@
+    <script>
+        $(document).ready(function () {
+             $.ajax({
+                type: 'POST',
+                url: '@Url.Action("LibraryList", "Home")',
+                dataType: 'Json',
+                 success: function (books) {
+                     //$("#Library_Id").append('<option value=""></option>');
+                    $.each(books, function (i, book) {
+                        $("#Library_Id").append('<option value="' + book.library_Id + '">' +
+                            book.library_Name + '</option>');
+                    });
+                     const options = []
+                     document.querySelectorAll('#Library_Id > option').forEach((option) => {
+                         if (options.includes(option.value)) option.remove()
+                         else options.push(option.value)
+                     })
+                    },
+                 error: function (ex) {
+                     localStorage.setItem("Status", 'Library retrieving fail.')
+                    }
+                });
+        });
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        function Update() {
+            if (document.getElementById("UserName").value == "") {
+                alert("Please provide username !");
+                document.getElementById("UserName").focus();0
+                return false;
+            }
+            if (document.getElementById("Email").value == "") {
+                alert("Please provide Email !");
+                document.getElementById("Email").focus();
+                return false;
+            }
+            if (document.getElementById("PhoneNumber").value == "") {
+                alert("Please provide PhoneNumber !");
+                document.getElementById("PhoneNumber").focus();
+                return false;
+            }
+            if (document.getElementById("Library_Id").value == "") {
+                alert("Please provide Library Name !");
+                document.getElementById("Library_Id").focus();
+                return false;
+            }
+            var Data =
+            {
+                Id: $("#Id").val(),
+                UserName: $("#UserName").val(),
+                Email: $("#Email").val(),
+                PhoneNumber: $("#PhoneNumber").val(),
+                Library_Id: $("#Library_Id").val()
+            }
+            $.ajax({
+                url: '@Url.Action("EditLibrarian", "Home")',
+                method: "POST",
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: Data,
+                success: function (response) {
+                    debugger
+                    localStorage.setItem("Status", response)
+                    $("#Librarian-Detail-User .btn btn-secondary").click()
+                    $("#Librarian-Detail-User").modal('hide');
+                    Message();
+                },
+                error: function (err) {
+                    localStorage.setItem("Status", err);
+                    $("#Librarian-Detail-User .btn btn-secondary").click()
+                    $("#Librarian-Detail-User").modal('hide');
+                    Message();
+                },
+            });
+        }
+    </script>
+
+</body>
+</html>

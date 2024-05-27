@@ -1,0 +1,95 @@
+﻿@model Library_Management_System.Models.DTO.Libraries
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPositionsLabel">
+                    Library Details
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h5>
+            </div>
+            <form>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Library_Id, new { })
+
+                <p>
+                    @Html.LabelFor(model => model.Library_Name, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_Name })
+                    @Html.EditorFor(model => model.Library_Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Library_Name, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Library_Address, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_Address })
+                    @Html.EditorFor(model => model.Library_Address, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Library_Address, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Library_City, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_City })
+                    @Html.EditorFor(model => model.Library_City, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Library_City, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Library_Pincode, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_Pincode })
+                    @Html.EditorFor(model => model.Library_Pincode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Library_Pincode, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(model => model.Library_Create_Date, htmlAttributes: new { @class = "control-label col-md-2", @id = Model.Library_Create_Date })
+                    @Html.EditorFor(model => model.Library_Create_Date, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Library_Create_Date, "", new { @class = "text-danger" })
+                </p>
+                <p>
+                    <div id="Update">
+                        <input type="button" value="Save" onclick="Update()" class="registerbtn" />
+                    </div>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script>
+        function Message() {
+            if (localStorage.getItem("Status")) {
+                toastNotifySuccess(localStorage.getItem("Status"));
+                localStorage.clear();
+            }
+            if (localStorage.getItem("Error")) {
+                toastNotifyError(localStorage.getItem("Error"));
+                localStorage.clear();
+            }
+        }
+        function Update() {
+            var Data =
+            {
+                Library_Id: $("#Library_Id").val(),
+                Library_Name: $("#Library_Name").val(),
+                Library_Address: $("#Library_Address").val(),
+                Library_City: $("#Library_City").val(),
+                Library_Pincode: $("#Library_Pincode").val(),
+                Library_Create_Date: $("#Library_Create_Date").val()
+            }
+            $.ajax({
+                url: "/Home/EditLibrary/",
+                method: "POST",
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: Data,
+                success: function (response) {
+                    localStorage.setItem("Status", response)
+                    $("#Detail-User .close").click()
+                    Message();
+                },
+                error: function (err) {
+                    localStorage.setItem("Status", err)
+                    $("#Detail-User .close").click()
+                    Message();
+                },
+            });
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+﻿@model Library_Management_System.Models.DTO.IssueBook
+
+<div class="page-body">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Search Book" id="SearchBook" onkeyup="myFunction()">
+        </div>
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Search Student" id="SearchStudent" onkeyup="myFunction2()">
+        </div>
+    </div>
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <center>
+                            <h4>Book Return</h4>
+                        </center>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Student Name</label>
+                        <div class="form-group">
+                            <select name="Student_Name" id="Student_Name" class="form-control" onclick="FilterStudent()" required>
+                                <option value="">Select Student </option>
+                                @foreach (var item in Model.BookReturns)
+                                {
+                                    <option value="@item.Student_Name">
+                                        @item.Student_Name
+                                    </option>
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Book Name</label>
+                        <div class="form-group">
+                            <select name="Book_Name" id="Book_Name" class="form-control" required>
+                                <option value="" id="bname">Select Book </option>
+                                @* @foreach (var item in Model.BookReturns)
+                                    {
+                                        <option value="@item.Book_Name">
+                                            @item.Book_Name
+                                        </option>
+
+                                    }*@
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="number" id="Penalty" name="Penalty" class="form-control" placeholder="Penalty" required>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <button type="button" class="btn btn-primary btn-block" id="Button2" onclick="ReturnBook()">Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card" id="cardid" style="display:none">
+        <div class="card-block table-border-style">
+            <div class="table-responsive">
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Book Name</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Penalty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.BookReturns)
+                        {
+                            <tr>
+                                <td>@row.Student_Name</td>
+                                <td>@row.Book_Name</td>
+                                <td>@row.Issue_Date</td>
+                                <td>@row.Due_Date</td>
+                                <td>@row.Penalty</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    table = document.getElementById("cardid");
+    //    table.style.display = "none";
+    //})
+    function ReturnBook() {
+        var Data =
+        {
+            Student_Name: $("#Student_Name").val(),
+            Book_Name: $("#Book_Name").val(),
+            Penalty: $("#Penalty").val()
+        }
+        $.ajax({
+            url: '@Url.Action("ReturnBook", "Home")',
+            method: "POST",
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: Data,
+        });
+    }
+    function myFunction() {
+        var div = document.getElementById("cardid");
+        div.style.display = "";
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("SearchBook");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        if (input.value == "") {
+            div.style.display = "none";
+        }
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function myFunction2() {
+        var div = document.getElementById("cardid");
+        div.style.display = "";
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("SearchStudent");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        if (input.value == "") {
+            div.style.display = "none";
+        }
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function FilterStudent() {
+        var div = document.getElementById("cardid");
+        div.style.display = "";
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("Student_Name");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+        if (filter == "") {
+            div.style.display = "none";
+        }
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    $("#Student_Name").change(function () {
+        $("#Book_Name").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBookList", "Home")',
+                dataType: 'Json',
+                data: { Student_Name: $("#Student_Name").val() },
+                success: function (books) {
+                    $("#Book_Name").append('<option value="">Select Book</option>');
+                    $.each(books, function (i, book) {
+                        $("#Book_Name").append('<option value="' + book.book_Name + '">' +
+                            book.book_Name + '</option>');
+                    });
+                    },
+                    error: function (ex) {
+                        alert('city retrieving fail.' + ex);
+                    }
+                });
+    });
+    const options = []
+    document.querySelectorAll('#Student_Name > option').forEach((option) => {
+        if (options.includes(option.value)) option.remove()
+        else options.push(option.value)
+    })
+</script>
